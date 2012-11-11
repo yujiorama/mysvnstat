@@ -1,5 +1,27 @@
-%html
-  %head
-    %title= @title
-  %body
-    %h1= @title
+- @stylesheet = 'mysvnstat.css'
+%header
+  %h1= @title
+  %p subversion の log をグラフにしたい
+%section
+  %h2 解析するファイルを指定する
+  %p svn log --verbose --xml の結果ファイルを入れる
+  %form(method='post' enctype='multipart/form-data' action='/upload')
+    %input(type='file' name='logfile')
+    %input(type='submit' value='upload')
+%section
+  %h2 だいたいの情報
+  %dl
+    %dt 最新リビジョン番号
+    %dd 1000
+    %dt コミットユーザ数
+    %dd 10
+    %dt ファイル数
+    %dd 120
+%section
+  %h2 日別のコミットの様子
+  %p 横軸が日、縦軸がコミットされた行数の折線グラフ
+  %p http://www.flotcharts.org/ がよさげ
+  %p まずはユーザをまとめてしまいましょう
+%section
+  %h2 週別のコミットの様子
+  %p 横軸が週、縦軸がコミットされた行数の折線グラフ
