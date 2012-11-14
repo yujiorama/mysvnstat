@@ -1,27 +1,67 @@
-- @stylesheet = 'mysvnstat.css'
-%header
-  %h1= @title
-  %p subversion の log をグラフにしたい
-%section
-  %h2 解析するファイルを指定する
-  %p svn log --verbose --xml の結果ファイルを入れる
-  %form(method='post' enctype='multipart/form-data' action='/upload')
-    %input(type='file' name='logfile')
-    %input(type='submit' value='upload')
-%section
-  %h2 だいたいの情報
-  %dl
-    %dt 最新リビジョン番号
-    %dd 1000
-    %dt コミットユーザ数
-    %dd 10
-    %dt ファイル数
-    %dd 120
-%section
-  %h2 日別のコミットの様子
-  %p 横軸が日、縦軸がコミットされた行数の折線グラフ
-  %p http://www.flotcharts.org/ がよさげ
-  %p まずはユーザをまとめてしまいましょう
-%section
-  %h2 週別のコミットの様子
-  %p 横軸が週、縦軸がコミットされた行数の折線グラフ
+!!! XML
+!!! Strict
+
+%html
+  %head
+    %title mysvnstat
+    %meta{:'http-equiv' => 'Content-Type', :content=>'text/html'}
+    %link{:rel => 'stylesheet', :type => 'text/css', :href =>'/css/mysvnstat.css'}
+    %script{:type => 'text/javascript', :src => 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'}
+    %script{:type => 'text/javascript', :src => '/js/highcharts.js'}
+    %script{:type => 'text/javascript', :src => '/js/themes/gray.js'}
+    :javascript
+      var chart1; // globally available
+      jQuery(document).ready(function() {
+            chart1 = new Highcharts.Chart({
+               chart: {
+                  renderTo: 'container',
+                  type: 'bar'
+               },
+               title: {
+                  text: 'Fruit Consumption'
+               },
+               xAxis: {
+                  categories: ['Apples', 'Bananas', 'Oranges']
+               },
+               yAxis: {
+                  title: {
+                     text: 'Fruit eaten'
+                  }
+               },
+               series: [{
+                  name: 'Jane',
+                  data: [1, 0, 4]
+               }, {
+                  name: 'John',
+                  data: [5, 7, 3]
+               }]
+            });
+         });    
+%body
+  %header
+    %h1= @title
+    %p subversion の log をグラフにしたい
+  %section
+    %h2 解析するファイルを指定する
+    %p svn log --verbose --xml の結果ファイルを入れる
+    %form(method='post' enctype='multipart/form-data' action='/upload')
+      %input(type='file' name='logfile')
+      %input(type='submit' value='upload')
+  %section
+    %h2 だいたいの情報
+    %dl
+      %dt 最新リビジョン番号
+      %dd 1000
+      %dt コミットユーザ数
+      %dd 10
+      %dt ファイル数
+      %dd 120
+  %section
+    %h2 日別のコミットの様子
+    %p 横軸が日、縦軸がコミットされた行数の折線グラフ
+    %p http://www.flotcharts.org/ がよさげ
+    %p まずはユーザをまとめてしまいましょう
+    %div#container{:style => 'width:100%;height:400px'}
+  %section
+    %h2 週別のコミットの様子
+    %p 横軸が週、縦軸がコミットされた行数の折線グラフ
