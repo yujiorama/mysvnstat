@@ -10,33 +10,66 @@
     %script{:type => 'text/javascript', :src => '/js/highcharts.js'}
     %script{:type => 'text/javascript', :src => '/js/themes/gray.js'}
     :javascript
-      var chart1; // globally available
-      jQuery(document).ready(function() {
-            chart1 = new Highcharts.Chart({
-               chart: {
-                  renderTo: 'container',
-                  type: 'bar'
-               },
-               title: {
-                  text: 'Fruit Consumption'
-               },
-               xAxis: {
-                  categories: ['Apples', 'Bananas', 'Oranges']
-               },
-               yAxis: {
-                  title: {
-                     text: 'Fruit eaten'
-                  }
-               },
-               series: [{
-                  name: 'Jane',
-                  data: [1, 0, 4]
-               }, {
-                  name: 'John',
-                  data: [5, 7, 3]
-               }]
-            });
-         });    
+      jQuery(document).ready(function(){
+        var options = {
+          chart: {
+            renderTo: 'daily',
+            type: 'line'
+          },
+          title: {
+            text: 'daily commit graph'
+          },
+          xAxis: {
+          type: 'datetime',
+          dateTimeLabelFormats: {
+            month: '%m',
+            year: '%y'
+            },
+            day: []
+          },
+          yAxis: {
+            title: {
+              text: 'commit objects'
+            }
+          },
+          legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'top',
+            borderWidth: 0
+          },
+          tooltip: {
+            formatter: function(){
+              this.x + ':' + this.y;
+            }
+          },
+          series: []
+        };
+        jQuery.get('dailylog.xml', function(xml){
+          var dom = jQuery(xml);
+
+          // xAxis (TODO generate from calendar)
+          options.xAxis.day = ['2012-11-17','2012-11-18','2012-11-19','2012-11-20'];
+
+          // series
+          dom.find('logentry').each(function(i,v){
+            var entry = jQuery(v);
+            var seriesOptions = {
+              name: entry.find('author').text(),
+              data: [
+                [Date.UTC(2012,10,17), 5],
+                [Date.UTC(2012,10,18), 2],
+                [Date.UTC(2012,10,19), 10],
+                [Date.UTC(2012,10,20), 1]
+              ]
+            };
+            // TODO summarize commit object per day
+            
+            options.series.push(seriesOptions);
+          });
+          var chart = new Highcharts.Chart(options);
+        });
+      });
 %body
   %header
     %h1= @title
@@ -61,7 +94,7 @@
     %p 横軸が日、縦軸がコミットされた行数の折線グラフ
     %p http://www.flotcharts.org/ がよさげ
     %p まずはユーザをまとめてしまいましょう
-    %div#container{:style => 'width:100%;height:400px'}
+    %div#daily{:style => 'width:100%;height:400px'}
   %section
     %h2 週別のコミットの様子
     %p 横軸が週、縦軸がコミットされた行数の折線グラフ
